@@ -15,11 +15,8 @@
 from os.path import join as path_join, basename
 from zlib import compress, decompress
 
-try:
-    from bson.objectid import ObjectId
-    from gridfs.errors import NoFile
-except:
-    pass
+from bson.objectid import ObjectId
+from gridfs.errors import NoFile
 
 from utility import mongo_conv, staticclass
 from logic import get_context

@@ -13,12 +13,8 @@
 
 from functools import partial
 
-try:
-    from redis import Redis
-    from redis.client import Pipeline
-except:
-    pass
-
+from redis import Redis
+from redis.client import Pipeline
 
 from utility import staticclass
 from logic import get_context

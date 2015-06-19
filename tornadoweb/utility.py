@@ -21,11 +21,10 @@ from fnmatch import fnmatch
 from hashlib import md5
 from base64 import b64encode, b64decode
 from inspect import ismodule, getmembers
-try:
-    from bson.objectid import ObjectId
-    from pyDes import des, triple_des, PAD_PKCS5, CBC
-except:
-    pass
+from msgpack import loads, dumps
+
+from bson.objectid import ObjectId
+from pyDes import des, triple_des, PAD_PKCS5, CBC
 
 
 
@@ -244,5 +243,5 @@ __all__ = ["ROOT_PATH", "app_path", "template_path", "static_path",
         "staticclass", "sealedclass", "partialclass",
         "get_modules", "get_members",
         "conv_mongo_object", "mongo_conv", "set_default_encoding",
-        "hash2", "encrypt", "decrypt",
+        "hash2", "loads", "dumps", "encrypt", "decrypt",
         "not_null", "not_empty", "args_range", "args_length"]

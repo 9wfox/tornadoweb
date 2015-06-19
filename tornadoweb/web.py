@@ -3,6 +3,17 @@
 """
     Web 模块
 
+    本模块主要对 Tornado (http://www.tornadoweb.org) 的 web.py 进行扩展和继承。
+
+    作者: Q.yuhen
+    创建: 2011-07-31
+
+    历史:
+        2011-08-19  + 增加登录相关操作。
+        2011-08-20  + 增加 BaseHandler.get_error_html 处理。
+                    - 删除 NotFoundHandler。
+        2011-08-29  + 增加 Session。
+                    * 在 BaseHandler 中自动创建上下文对象。
 """
 
 from os.path import exists
@@ -12,16 +23,12 @@ from datetime import datetime
 from httplib import responses
 from uuid import uuid4
 
+from redis import Redis
 from tornado.web import RequestHandler, ErrorHandler, authenticated as auth
-from utility import template_path
-from logic import LogicContext
 
-try:
-    from msgpack import loads, dumps
-    from redis import Redis
-    from cache import op_cache
-except:
-    pass
+from logic import LogicContext
+from cache import op_cache
+from utility import template_path, loads, dumps
 
 
 

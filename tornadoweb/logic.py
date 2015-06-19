@@ -24,12 +24,9 @@ from bisect import bisect_right
 from hashlib import md5
 from threading import local
 
-try:
-    from redis import Redis
-    from pymongo import Connection as MongoConnection
-    from gridfs import GridFS
-except:
-    pass
+from redis import Redis
+from pymongo import Connection as MongoConnection
+from gridfs import GridFS
 
 
 

@@ -11,5 +11,6 @@ tornadoweb/service.py
 tornadoweb/settings.py
 tornadoweb/shell.py
 tornadoweb/test.py
+tornadoweb/tornadoweb_init.py
 tornadoweb/utility.py
 tornadoweb/web.py

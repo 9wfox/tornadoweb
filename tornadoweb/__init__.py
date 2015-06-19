@@ -19,10 +19,7 @@
 """
 #DELETE windows不兼容， TODO
 from app import *
-try:
-    from cache import *
-except:
-    pass
+from cache import *
 from config import *
 from gfs import *
 from logic import *
