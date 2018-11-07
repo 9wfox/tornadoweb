@@ -2,18 +2,6 @@
 
 """
     Web 模块
-
-    本模块主要对 Tornado (http://www.tornadoweb.org) 的 web.py 进行扩展和继承。
-
-    作者: Q.yuhen
-    创建: 2011-07-31
-
-    历史:
-        2011-08-19  + 增加登录相关操作。
-        2011-08-20  + 增加 BaseHandler.get_error_html 处理。
-                    - 删除 NotFoundHandler。
-        2011-08-29  + 增加 Session。
-                    * 在 BaseHandler 中自动创建上下文对象。
 """
 
 from os.path import exists
@@ -23,76 +11,9 @@ from datetime import datetime
 from httplib import responses
 from uuid import uuid4
 
-from redis import Redis
 from tornado.web import RequestHandler, ErrorHandler, authenticated as auth
 
-from logic import LogicContext
-from cache import op_cache
-from utility import template_path, loads, dumps
-
-
-
-class Session(object):
-    """
-        Session (cache store)
-
-        示例:
-            with LogicContext():
-                session = Session("session_a", 60)
-
-                session.a = 1
-                session.b = "Hello, World!"
-
-                self.assertEqual(session.a, 1)
-                self.assertEqual(session.b, "Hello, World!")
-
-                for k, v in session:
-                    print k, v, type(v)
-
-                del session.a
-                self.assertIsNone(session.a)
-    """
-
-    _ID = "__SESSIONID__"
-
-    def __init__(self, sid, expire = None):
-
-        # 不要直接使用属性，或者使用getattr/setattr，和 __getattr__,__setattr__ 冲突。
-        self.__dict__["_id"] = sid
-        self.__dict__["_expire"] = expire or __conf__.SESSION_EXPIRE
-
-    
-    def __getattr__(self, name):
-        value = op_cache(self._id, Redis.hget, name, expire_seconds = self._expire)
-        return value and loads(value)
-
-
-    def __setattr__(self, name, value):
-        op_cache(self._id, Redis.hset, name, dumps(value), expire_seconds = self._expire)        
-
-
-    def __delattr__(self, name):
-        op_cache(self._id, Redis.hdel, name, expire_seconds = self._expire)        
-
-
-    def __iter__(self):
-        items = op_cache(self._id, Redis.hgetall, expire_seconds = self._expire)
-        for k, v in items.items():
-            yield k, loads(v)
-
-
-    @classmethod
-    def get(cls, get_cookie, set_cookie):
-        """
-            设置或获取 Session
-        """
-        sid = get_cookie(cls._ID)
-
-        if not sid:
-            sid = str(uuid4())
-            set_cookie(cls._ID, sid)
-
-        return Session(sid)
+from utility import template_path
 
 
 
@@ -115,20 +36,30 @@ class BaseHandler(RequestHandler):
 
     ### override ####################
 
-    def _execute(self, transforms, *args, **kwargs):
-        """
-            为 Action Method 准备额外的上下文环境。
-        """
-        with LogicContext():
-            super(BaseHandler, self)._execute(transforms, *args, **kwargs)
+    #def _execute(self, transforms, *args, **kwargs):
+    #    """
+    #        为 Action Method 准备额外的上下文环境。
+    #    """
+    #    with LogicContext():
+    #        super(BaseHandler, self)._execute(transforms, *args, **kwargs)
 
+
+    def set_default_headers(self):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET')
+
+    def options(self, *args, **kwargs):
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Headers", "x-requested-with")
+        self.set_header('Access-Control-Allow-Methods', 'POST, GET')
 
     def prepare(self):
         """
             预处理操作
         """
         self._pv_log()
-        self._session()
+        #self._session()
         self._return_url()
 
 
@@ -148,7 +79,6 @@ class BaseHandler(RequestHandler):
             可以通过 send_error 向错误模板页发送数据。
         """
         template_name = "{0}.html".format(status_code)
-        print status_code
         if not exists(template_path(template_name)): template_name = "error.html"
         if not exists(template_path(template_name)): return super(BaseHandler, self).get_error_html(status_code, **kwargs)
         
@@ -181,22 +111,13 @@ class BaseHandler(RequestHandler):
                     self.request.remote_ip, self.request.method, self.request.uri)
 
 
-    ### Session ###################
-
-    def _session(self):
-        """
-            设置或获取 Session
-        """
-        self.session = Session.get(self.get_cookie, self.set_cookie)
-
-
     ### Login ######################
 
     def _return_url(self):
         """
             处理登录返回跳转链接
         """
-        if type(self).__name__ == "LoginHandler" and self.request.method == "GET":
+        if type(self).__name__ == "LoginHandler" and self.request.method == "POST":
             return_url = self.get_argument("next", None)
             if return_url: self.set_cookie(self._RETURN_URL, return_url)
 
@@ -264,21 +185,4 @@ def url(pattern, order = 0):
     return actual
 
 
-
-def nocache(method):
-    """
-        Method Decorator: 不缓存，通用用于 ajax.getJSON。
-    """
-    if not ismethod(method) and not isfunction(method):
-        raise Exception("must be Method.")
-
-    @func_wraps(method)
-    def wrap(self, *args, **kwargs):
-        self.set_header("Cache-Control", "No-Cache")
-        method(self, *args, **kwargs)
-
-    return wrap
-
-
-
-__all__ = ["BaseHandler", "auth", "url", "nocache"]
+__all__ = ["BaseHandler", "auth", "url"]

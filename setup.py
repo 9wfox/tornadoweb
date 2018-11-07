@@ -1,17 +1,23 @@
+from setuptools import setup
 
-from distutils.core import setup
+# python setup.py sdist bdist_wheel
+# twine upload dist/*
+
+long_description = ""
 
 setup(
-    name='tornadoweb',
-    version='0.0.1.4',
-    author='9wfox',
-    author_email='568628130@qq.com',
-    packages=['tornadoweb'],
-    url='http://pypi.python.org/pypi/tornadoweb/',
-    scripts=["tornadoweb/tornadoweb_init.py"],
-    license='LICENSE',
-    description='tornado web',
-    long_description=''
+    name="tornadoweb",
+    version="0.0.5",
+    author="9wfox",
+    author_email="568628130@qq.com",
+    description="tornado web",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    url="https://github.com/9wfox/tornadoweb",
+    packages=["tornadoweb"],
+    classifiers=[
+        "Programming Language :: Python :: 2",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
 )
-
-
