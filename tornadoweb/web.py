@@ -8,12 +8,11 @@ from os.path import exists
 from functools import wraps as func_wraps
 from inspect import isclass, ismethod, isfunction
 from datetime import datetime
-from httplib import responses
 from uuid import uuid4
 
 from tornado.web import RequestHandler, ErrorHandler, authenticated as auth
 
-from utility import template_path
+from .utility import template_path
 
 
 
@@ -72,20 +71,6 @@ class BaseHandler(RequestHandler):
         return self.get_secure_cookie(self._USER_NAME)
 
 
-    def get_error_html(self, status_code, **kwargs):
-        """
-            返回错误页面信息
-
-            可以通过 send_error 向错误模板页发送数据。
-        """
-        template_name = "{0}.html".format(status_code)
-        if not exists(template_path(template_name)): template_name = "error.html"
-        if not exists(template_path(template_name)): return super(BaseHandler, self).get_error_html(status_code, **kwargs)
-        
-        kwargs.update(dict(status_code = status_code, message = responses[status_code]))
-        return self.render_string(template_name, **kwargs)
-
-
     def render_string(self, template_name, **kwargs):
         """
             添加注入模板的自定义参数等信息
@@ -104,11 +89,7 @@ class BaseHandler(RequestHandler):
         """
             记录访问日志
         """
-        # _log 这个名字已经被霸占了！(#^.^#)
-        if __conf__.DEBUG:
-            print "{0}: {1}, {2}, {3}".format(
-                    datetime.now().strftime("%H:%M:%S"), 
-                    self.request.remote_ip, self.request.method, self.request.uri)
+        pass
 
 
     ### Login ######################

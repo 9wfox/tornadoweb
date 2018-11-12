@@ -1,11 +1,16 @@
 #-*- coding:utf-8 -*-
 
-import __builtin__
+import six
+if six.PY3:
+    import builtins as __builtin__
+else:
+    import __builtin__
+
 
 from os.path import exists
 from types import ModuleType
 
-from utility import app_path, staticclass
+from .utility import app_path, staticclass
 
 
 
@@ -26,10 +31,14 @@ class ConfigLoader(object):
         module = ModuleType("__conf__")
 
         for py in pys:
-            if exists(py): execfile(py, dct)
+            scope = {}
+            with open(py,'r') as f:
+                body = f.read()
+                exec(body, scope)
 
-        for k, v in dct.items():
-            setattr(module, k, v)
+                for k, v in scope.items():
+                    if k.startswith("__"): continue
+                    setattr(module, k, v)
 
         __builtin__.__conf__ = module
 

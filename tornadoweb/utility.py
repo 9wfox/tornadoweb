@@ -66,7 +66,6 @@ def set_default_encoding():
         设置系统默认编码
     """
     import sys, locale
-    reload(sys)
 
     lang, coding = locale.getdefaultlocale()
     #sys.setdefaultencoding(coding)

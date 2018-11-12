@@ -1,14 +1,5 @@
 #-*- coding:utf-8 -*-
 
-"""
-    MVC 根模块
-
-    扫描 /action 下所有的 handler，并依据其 @url 装饰器进行组装。
-    创建 Tornado HTTPServer 做为系统运行环境。
-
-    执行 run() 启动系统。
-"""
-
 from os import getpid#DELETE , getppid
 from sys import argv
 from inspect import isclass
@@ -19,8 +10,8 @@ from tornado.ioloop import IOLoop
 from tornado.httpserver import HTTPServer
 from tornado.web import Application as WebApplication
 
-from web import BaseHandler
-from utility import app_path, get_members
+from .web import BaseHandler
+from .utility import app_path, get_members
 
 
 class Application(object):
@@ -63,7 +54,7 @@ class Application(object):
         handlers = [(pattern, order, h) for h in members.values() for pattern, order in h.__urls__]
 
         # 排序。
-        handlers.sort(cmp = cmp, key = lambda x: x[1])
+        # handlers.sort(cmp = cmp, key = lambda x: x[1])
 
         handlers = [('/api/v1' + pattern, handler) for pattern, _, handler in handlers]
 
@@ -102,7 +93,7 @@ class Application(object):
 
             IOLoop.current().start()
         except KeyboardInterrupt:
-            print "exit ..."
+            print ("exit ...")
 
 
     def run(self):
