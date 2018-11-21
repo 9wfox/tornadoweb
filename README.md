@@ -36,3 +36,24 @@ python apprun.py --port=80 --config=settings.py
 USE __conf__.PORT ...
 ```
 
+## How to write a http resful api
+```
+vim action/test.py
+
+from tornadoweb import *
+from logic.utility import LoginedRequestHandler
+
+@url(r"/hello")
+class GetHandler(BaseHandler):
+    def get(self):
+        to = self.get_argument("to", "World")
+	self.write(dict(status = True, msg = "Hello {}".format(to)))
+:wq
+
+python run.py
+curl http://localhost:9999/hello?to=World
+
+```
+
+
+

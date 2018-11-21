@@ -56,7 +56,12 @@ class Application(object):
         # 排序。
         # handlers.sort(cmp = cmp, key = lambda x: x[1])
 
-        handlers = [('/api/v1' + pattern, handler) for pattern, _, handler in handlers]
+        try:
+            api_version = __conf__.API_VERSION
+        except Exception as e:
+            api_version = ''
+
+        handlers = [(api_version + pattern, handler) for pattern, _, handler in handlers]
 
         handlers.append((r'^/(.*?)$', tornado.web.StaticFileHandler, {"path":"static", "default_filename":"index.html"}))
         return handlers
