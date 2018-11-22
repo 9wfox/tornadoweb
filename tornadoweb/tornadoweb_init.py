@@ -11,7 +11,6 @@ def go():
 
         current_dir = (os.path.dirname(__file__))
         zip_ref = zipfile.ZipFile(os.path.join(current_dir, 'project.zip'), 'r')
-        zip_ref = zipfile.ZipFile('tornadoweb/project.zip', 'r')
         zip_ref.extractall(p)
         zip_ref.close()
 
