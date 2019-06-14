@@ -19,9 +19,6 @@ class ConfigLoader(object):
 
     @staticmethod
     def load(config = None):
-        """
-            合并设置，返回设置模块对象。
-        """
         if config:
             pys = map(app_path, (config, ))
         else:
