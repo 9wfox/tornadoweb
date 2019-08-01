@@ -41,6 +41,9 @@ class Application(object):
         handlers = [(api_version + pattern, handler) for pattern, _, handler in handlers]
 
         handlers.append((r'^{}/(.*?)$'.format(api_version), tornado.web.StaticFileHandler, {"path":"static", "default_filename":"index.html"}))
+
+        handlers.append((r'^/(.*?)$', tornado.web.StaticFileHandler, {"path":"static", "default_filename":"index.html"}))
+
         return handlers
 
 

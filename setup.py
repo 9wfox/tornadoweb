@@ -7,7 +7,7 @@ long_description = ""
 
 setup(
     name="tornadoweb",
-    version="0.0.17",
+    version="0.0.19",
     author="9wfox",
     author_email="568628130@qq.com",
     description="tornado web",
