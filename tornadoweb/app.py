@@ -40,9 +40,10 @@ class Application(object):
 
         handlers = [(api_version + pattern, handler) for pattern, _, handler in handlers]
 
-        handlers.append((r'^{}/(.*?)$'.format(api_version), tornado.web.StaticFileHandler, {"path":"static", "default_filename":"index.html"}))
+        handlers.append((r'^/upload/(.*?)$', tornado.web.StaticFileHandler, {"path":"upload", "default_filename":"index.html"}))
 
-        handlers.append((r'^/(.*?)$', tornado.web.StaticFileHandler, {"path":"static", "default_filename":"index.html"}))
+        from .web import BaseHandler
+        handlers.append((r'^(.*?)$', BaseHandler))
 
         return handlers
 
@@ -51,6 +52,8 @@ class Application(object):
     def _get_webapp(self):
         settings = {
             "PORT"          : self._port,
+            "static_path"   : app_path(__conf__.STATIC_DIR_NAME),
+            "template_path" : app_path(__conf__.TEMPLATE_DIR_NAME),
             "debug"         : __conf__.DEBUG,
             "cookie_secret" : __conf__.COOKIE_SECRET
         }

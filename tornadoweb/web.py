@@ -13,20 +13,14 @@ class BaseHandler(RequestHandler):
     __USERNAME__ = "__USERNAME__"
 
 
-    #def set_default_headers(self):
-    #    self.set_header("Access-Control-Allow-Origin", "*")
-    #    self.set_header("Access-Control-Allow-Headers", "x-requested-with")
-    #    self.set_header('Access-Control-Allow-Methods', 'POST, GET')
+    def get(self, *args, **kwargs):
+        self.send_error(404)
 
-    #def options(self, *args, **kwargs):
-    #    self.set_header("Access-Control-Allow-Origin", "*")
-    #    self.set_header("Access-Control-Allow-Headers", "x-requested-with")
-    #    self.set_header('Access-Control-Allow-Methods', 'POST, GET')
+    def post(self, *args, **kwargs):
+        self.send_error(404)
 
     def get_current_user(self):
         return self.get_secure_cookie(self.__USERNAME__)
-
-
 
 
 ErrorHandler.__bases__ = (BaseHandler,)
